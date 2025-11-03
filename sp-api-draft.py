@@ -1,6 +1,4 @@
-from sp_api.api import Reports, Tokens
-from decouple import config
-from sp_api.base import SellingApiException
+from sp_api.api import Reports, ReportsV2
 from sp_api.base.reportTypes import ReportType
 from sp_api.base.marketplaces import Marketplaces
 from datetime import datetime, timedelta, timezone
@@ -43,6 +41,14 @@ def get_fba_inventory_ledger_data():
     get_report_data(report_type=report_name,
                     file_destination=report_mapping[report_name])
 
+def create_reports():
+    ReportsV2().create_report(
+        reportType=ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_LAST_UPDATE_GENERAL,
+        # optionally, you can set a start and end time for your report
+        dataStartTime=(datetime.utcnow() - timedelta(days=7)).isoformat(),
+    dataEndTime = (datetime.utcnow() - timedelta(days=1)).isoformat(),
+    )
+
 
 def get_report_data(report_type: str,
                     file_destination: str):
@@ -56,8 +62,8 @@ def get_report_data(report_type: str,
                           marketplace=Marketplaces.ES)
     res = report_boss.get_reports(reportTypes=report_types,
                                   processingStatuses=processing_status,
-                                  createdSince=created_since,
-                                  createdUntil=created_until,
+                                  dataStartTime=created_since,
+                                  dataEndTime=created_until,
                                   marketplaceIds=[Marketplaces.ES.marketplace_id])
     latest_done_report = res.payload['reports'][0]
     report_document_id = latest_done_report['reportDocumentId']
