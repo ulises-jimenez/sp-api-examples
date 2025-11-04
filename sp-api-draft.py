@@ -41,13 +41,29 @@ def get_fba_inventory_ledger_data():
     get_report_data(report_type=report_name,
                     file_destination=report_mapping[report_name])
 
+
 def create_reports():
-    ReportsV2().create_report(
+    data_start_time = datetime(2025, 10, 27, 0, 0, 0, 0).isoformat()
+    data_end_time = datetime(2025, 10, 28, 0, 0, 0, 0).isoformat()
+    result = ReportsV2(credentials=credentials,
+                       marketplace=Marketplaces.DE).create_report(
         reportType=ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_LAST_UPDATE_GENERAL,
         # optionally, you can set a start and end time for your report
-        dataStartTime=(datetime.utcnow() - timedelta(days=7)).isoformat(),
-    dataEndTime = (datetime.utcnow() - timedelta(days=1)).isoformat(),
-    )
+        dataStartTime=data_start_time,
+        dataEndTime=data_end_time)
+    print('stop')
+
+def get_specific_report(report_id: str):
+    report_id = '8972752020395'
+    report_boss = Reports(credentials=credentials,
+                          marketplace=Marketplaces.DE)
+    result = report_boss.get_report(report_id)
+    document_id = result.payload['reportDocumentId']
+    report_boss.get_report_document(reportDocumentId=document_id,
+                                    download=True,
+                                    file='downloaded_reports/specific_id.tsv')
+    print('hello')
+
 
 
 def get_report_data(report_type: str,
@@ -59,7 +75,7 @@ def get_report_data(report_type: str,
     created_since = (datetime.now(timezone.utc) - timedelta(days=created_since_days)).isoformat()
     created_until = (datetime.now(timezone.utc) - timedelta(days=created_until_days)).isoformat()
     report_boss = Reports(credentials=credentials,
-                          marketplace=Marketplaces.ES)
+                          marketplace=Marketplaces.DE)
     res = report_boss.get_reports(reportTypes=report_types,
                                   processingStatuses=processing_status,
                                   dataStartTime=created_since,
@@ -74,20 +90,24 @@ def get_report_data(report_type: str,
 
 
 def main():
-    get_orders_data()
+    get_specific_report(report_id='2323')
+    # get_orders_data()
     # print('got orders')
-    get_fulfilled_data() # gets EU wide order data
-    print('got fba fulfilled')
-    process_amazon_fulfilled()
-    print('processed')
-    get_fulfilled_returns_data()
-    print('got_fba_returns')
-    get_all_returns_data()
-    print('got all returns')
-    get_settlement_data()
-    print('got all settlement')
-    get_fba_inventory_ledger_data()
-    print('got fba inventory ledger')
+    # get_fulfilled_data()  # gets EU wide order data
+    # print('got fba fulfilled')
+    # process_amazon_fulfilled()
+    # print('processed')
+    # get_fulfilled_returns_data()
+    # print('got_fba_returns')
+    # get_all_returns_data()
+    # print('got all returns')
+    # get_settlement_data()
+    # print('got all settlement')
+    # get_fba_inventory_ledger_data()
+    # print('got fba inventory ledger')
+
+# def main():
+#     create_reports()
 
 
 # report request

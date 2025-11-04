@@ -14,7 +14,8 @@ currency_df = pd.DataFrame(currency_conversion)
 
 
 def main():
-    df_pre_merge = pd.read_csv(report_mapping['GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL'], sep='\t')
+    # df_pre_merge = pd.read_csv(report_mapping['GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL'], sep='\t')
+    df_pre_merge = pd.read_csv('downloaded_reports/specific_id.tsv', sep='\t')
     df = pd.merge(df_pre_merge, currency_df, on='currency')
     df['item_price_as_eur'] = round(df['item-price'] * df['exchange_rate'], 2)
     shipped = df[df['item-status'] == 'Shipped']
