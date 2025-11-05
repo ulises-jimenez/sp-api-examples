@@ -1,0 +1,43 @@
+tax workflow checklist
+
+
+1. get api tokens (LWA = Login with Amazon) for each store
+    a. LWA_APP_ID (sometimes called application client id)
+    b. LWA_CLIENT_SECRET = (client secret)
+    c. SP_API_REFRESH_TOKEN = account refresh token, one per store/seller
+
+2. get sales data
+    a. get GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL report from SP-API
+    b. Use this report to calculate sales and destination country of sale
+    c. exclude transactions where Amazon is designated marketplace supplier (usually happens in the UK)
+
+3. get amazon fulfillment data
+    a. GET_AMAZON_FULFILLED_SHIPMENTS_DATA_GENERAL report from SP-API
+    b. Use this report to get the following
+        1. shipping/dispatch country of origin for FBA orders
+        2. net item value before FBA fees and VAT
+
+4. get merchant fulfillment data
+    a. this is usually held in an internal database. You have to match warehouse origin to the sale from step 2.
+       You then apply the same cross border rules as for AFN shipments
+
+5. return data
+    a. GET_V2_ALL_RETURNS_DATA_BY_RETURN_DATE report from SP-API
+    b. Calculate tax paid for returned items and use it to reduce VAT tax total
+
+6. Find stock transfer transactions
+    When stock is transferred to warehouses in different countries, it is recorded as a transaction
+    These transactions must be identified and removed from the VAT calculations in order to avoid paying VAT twice
+    a. check GET_FBA_FULFILLMENT_INVENTORY_SUMMARY_DATA for these transactions
+    b. This must also be done for Merchant fullfilled inventory transfers
+
+HOW TO CALCULATE INPUT VAT
+1. calculate all fees that amazon has charged you
+    a. FBA
+    b. referral
+    c. etc
+2. Calculate VAT portion of above
+    a. around 20%, depends on what country
+
+
+HOW TO CALCULATE OUTPUT VAT

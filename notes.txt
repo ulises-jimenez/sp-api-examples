@@ -1,0 +1,62 @@
+Amazon Questions
+
+1. Some orders are labeled as having tax-collection-model MarketplaceFacilitator. It also lists Amazon as being responsible for tax.
+    What does this mean and how does it affect VAT for these orders?
+
+   Answer: This applies (mostly) when shipping goods directly to consumers from outside the EU.
+   Since UK is not in EU it usually applies to B2C sales there also. Need to confirm that we are shipping most orders to UK from warehouses outside the UK.
+
+2. Does GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL have the location where the order is shipped from if it is shipped by the merchant?
+
+    Answer: No
+
+3. Do FBA Inventory Ledger / Inventory Event Detail report have the dispatch country?
+
+    Answer: Yes for FBA orders, unclear for MFN orders. Might need to get that data from the internal databases
+
+Taxation complexities
+    1. Moving inventory from one country to another creates placeholder transactions that you do not have to pay VAT tax on. This trips up a lot of companies
+    2. Inventory transfers have to be declared locally (by country) to each tax authority using the sellers VAT number
+    3. Output VAT is the VAT you charge to your customers
+    4. Input VAT is the VAT you pay to suppliers
+    5. Net VAT owed is output VAT minus input VAT
+    6. Amazon fees (FBA, referral, etc) are added to input VAT
+    7. FBA removals/disposals are added to output VAT (this differs by country perhaps, need to double check)
+    8. Reimbursements (payments to sellers for amz errors) from amazon also affect VAT numbers. This could possibly be different in each jurisdiction
+    9. Discounts/Promotions also effect output VAT
+    10. Local sales (sale takes place in the same country as inventory) are taxed and paid directly where the sale took place
+    11. Cross border sales are recorded into OSS and paid into "home jurisdiction country" For BBG this would be Germany
+        note: these sales need to be tallied by destination country, and have VAT tax summed up. VAT reductions also need to be applied
+    12. Gift wrapping and shipping are taxed differently in different countries
+    13. Every country has different VAT rates
+
+EU tax advisor thread
+https://www.reddit.com/r/Amazonsellercentral/comments/11r1ave/which_is_the_best_vat_tax_partner_of_amazon_for/
+EU tax guide
+https://www.a2xaccounting.com/ecommerce-accounting-hub/amazon-vat-guide
+
+
+ Thomas requests (reports I need)
+ 1. Access to stranded inventory reports (other reports to follow)
+ 2. VAT Calculation Report "GET_VAT_TRANSACTION_DATA", "SC_VAT_TAX_REPORT" requires Tax Invoicing (Restricted) role
+ 3. PAN-EU Inventory Reports
+ 4. Transaction Reports
+ 5. Settlement Reports
+
+
+ confirmed EU wide reports
+ 1. GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL
+ 2. GET_AMAZON_FULFILLED_SHIPMENTS_DATA_GENERAL
+
+
+ steps to calculate VAT accurately per country
+ 1. filter transactions per country (DE etc) and limit transactions that have the same sending and receiving country
+    note: this data comes from GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL
+ 2. remove returns and their VAT from total
+    note: this data comes from GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE, gotta match by order id. Little tricky because return data and order date are not the same
+    note: this report has account claims AND returns data
+    note: also includes shipping returns and partial returns
+ 3.
+
+
+
