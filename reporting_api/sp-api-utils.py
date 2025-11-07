@@ -1,11 +1,33 @@
 import json
 import time
-
+from typing import List, Tuple
 from sp_api.api import Reports, ReportsV2
 from sp_api.base.reportTypes import ReportType
 from sp_api.base.marketplaces import Marketplaces
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 from utils import report_mapping, credentials, requests_folder
+from pprint import pprint
+
+
+def create_monthly_retrieval_dates(start_date: date,
+                                   end_date: date,
+                                   create_report_intervals: int) -> List[Tuple]:
+    period_length = (end_date - start_date).days
+    number_of_periods = period_length / create_report_intervals
+    number_of_periods_as_int = int(number_of_periods)
+    if number_of_periods > number_of_periods_as_int:
+        number_of_periods_as_int += 1
+    days_list = []
+    for period_count in range(number_of_periods_as_int):
+        end_of_period = start_date + timedelta(days=create_report_intervals)
+        if end_of_period >= end_date:
+            current_tuple = start_date, end_date
+            days_list.append(current_tuple)
+            break
+        current_tuple = start_date, end_of_period
+        days_list.append(current_tuple)
+        start_date = end_of_period + timedelta(days=1)
+    return days_list
 
 
 def create_reports() -> None:
@@ -56,20 +78,13 @@ def get_report_by_id(report_id: str, retries: int, retry_len_in_seconds: int):
 
 
 def main():
-    retrieve_ordered_report(report_type=ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL)
+    start_date = date(year=2025, month=7, day=1)
+    end_date = date(year=2025, month=9, day=30)
+    dates = create_monthly_retrieval_dates(start_date=start_date,
+                                           end_date=end_date,
+                                           create_report_intervals=10)
+    pprint(dates)
 
-
-# def main():
-#     create_reports()
-
-
-# report request
-# create_report_response = Reports().create_report(reportType=ReportType.GET_MERCHANT_LISTINGS_ALL_DATA)
-
-
-# PII Data
-
-# Orders(restricted_data_token='<token>').get_orders(CreatedAfter=(datetime.utcnow() - timedelta(days=7)).isoformat())
 
 if __name__ == '__main__':
     main()
