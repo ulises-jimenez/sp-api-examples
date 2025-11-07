@@ -1,0 +1,49 @@
+
+
+1. orders
+    report: GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL
+    table: sales table
+2. AFN order data
+    report: GET_AMAZON_FULFILLED_SHIPMENTS_DATA_GENERAL
+    table: AFN order data
+3. MFN order data
+    report: custom SQL query from client Database
+    table: MFN order data
+4. return data
+    report: GET_V2_ALL_RETURNS_DATA_BY_RETURN_DATE
+    table: return data
+5. AFN Fulfillment Inventory data
+    report: GET_FBA_FULFILLMENT_INVENTORY_SUMMARY_DATA
+    table: AFN stock transfer data
+6. MFN Fulfillment Inventory data
+    report: custom SQL query from client Database
+    table: MFN stock transfer data
+7. Settlement Data (validation)
+    report: GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
+
+
+TABLES:
+0. report creation tracking
+1. sales
+2. afn orders
+3. mfn orders
+4. returns
+5. afn stock transfers
+6. mfn stock transfers
+7. settlement reports (actual cash transfer flows for validation)
+
+CALCULATED TABLES:
+1. intracountry sales (AFN and MFN, so 2 tables)
+    a. minus returns
+    b. minus claims
+    c. minus discounts
+    d. minus lost/damaged from amz
+    e. minus B2b sales
+2. cross border sales (AFN and MFN, so 2 tables)
+    a. minus returns
+    b. minus claims
+    c. minus discounts
+    d. minus lost/damaged from amz
+    e. minus inventory transfers
+    f. minus B2B sales
+3. calculated amz fees
