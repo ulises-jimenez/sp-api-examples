@@ -31,13 +31,27 @@ tax workflow checklist
     a. check GET_FBA_FULFILLMENT_INVENTORY_SUMMARY_DATA for these transactions
     b. This must also be done for Merchant fullfilled inventory transfers
 
+7. Get Settlement Reports
+
 HOW TO CALCULATE INPUT VAT
 1. calculate all fees that amazon has charged you
-    a. FBA
+    a. FBA (FBF=fulfilled by amazon)
     b. referral
-    c. etc
+    c. packaging
+    d. etc
 2. Calculate VAT portion of above
     a. around 20%, depends on what country
 
 
 HOW TO CALCULATE OUTPUT VAT
+1. Calculate total of all goods sold after removal of following
+    a. reductions
+    b. adjustments
+    c. B2B sales
+2. Calculate VAT of above
+3. subtract input VAT from above figure
+
+
+Notes:
+1. OSS paid quarterly
+2. Use ECB currency rates at last day of quarter to change currencies
